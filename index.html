@@ -12,21 +12,27 @@
     <script src="./assets/script.js"></script>
 </head>
 <body>
+  <section class="searchContainer col-4">
     <div class="card">
         <div class="card-header">
             <div class="input-group mb-2">
-                <button type="button" class="btn btn-outline-secondary" id="input-group-button-left">Search</button>
-                <input type="text" class="form-control" placeholder="Search for a City..." aria-label="Username" aria-describedby="input-group-button-left">
-              </div>
+                <button type="button" id="searchButton" class="btn btn-outline-secondary" id="input-group-button-left">Search</button>
+                <input type="text" id="searchText" class="form-control" placeholder="Search for a City..." aria-label="Username" aria-describedby="input-group-button-left">
+            </div>
         </div>
         <div class="card-body">
-        <h5 class="card-title">Previous Searches</h5>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-          
+          <h5 class="card-title">Previous Searches</h5>
+          <ul class="list-group">
+            <li class="list-group-item">Cras justo odio</li>
+            <li class="list-group-item">Morbi leo risus</li>
+            <li class="list-group-item">Porta ac consectetur ac</li>
+            <li class="list-group-item">Vestibulum at eros</li>
+          </ul>
         </div>
         <div class="card-footer text-muted">
-          2 days ago
+            Select a recent search
         </div>
-      </div>
+    </div>
+  </section>
 </body>
 </html>

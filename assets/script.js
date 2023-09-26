@@ -1,4 +1,4 @@
-var apiKey = "8aac2c1bb4f228ebf4a3ecf51e0e6e58";
+var apiKey = '8aac2c1bb4f228ebf4a3ecf51e0e6e58';
 
 var searchBtn = document.getElementById('searchButton')
 var searchTxt = document.getElementById('searchText')
@@ -10,7 +10,7 @@ var clearHistoryBtn = document.getElementById('clearHistory')
 function submitButton() {
     console.log('hit submit button')
     city = searchTxt.value
-    createHistory()
+    createHistory(city)
     getWeather(city)
     searchTxt.value=''
 }
@@ -19,12 +19,16 @@ function cityClick(city) {
     getWeather(city);
   }
 
-function createHistory(){
+  function createHistory(city) {
     var history = JSON.parse(localStorage.getItem('history')) || [];
-    history.push(city)
-    localStorage.setItem('history', JSON.stringify(history));
-    console.log('added to history!')
-}
+    if (!history.includes(city)) {
+      history.push(city);
+      localStorage.setItem('history', JSON.stringify(history));
+      console.log('added to history!');
+    } else {
+      console.log('city already in history');
+    }
+  }
 
 function generateHistory() {
     var history = JSON.parse(localStorage.getItem('history')) || [];
@@ -46,29 +50,40 @@ function generateHistory() {
     }
   }
 
-  function getWeather(city) {
+function getWeather(city) {
     console.log('hit get weather');
     console.log(city);
     var weatherURL = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=30&appid=${apiKey}`;
     fetch(weatherURL)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Could not get location data');
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (!data || data.length === 0) {
-          throw new Error('Location data is empty');
-        }
-        let lat = data[0].lat;
-        let lon = data[0].lon;
-        console.log(lat + ' ' + lon);
-      })
-      .catch(error => {
-        console.log('There was a problem fetching weather data: ', error.message);
-      });
-  }
+        .then(response => {
+            if (!response.ok) {
+            console.log('Could not get location data');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data || data.length === 0) {
+                console.log('Location data is empty');
+            }
+            let lat = data[0].lat;
+            let lon = data[0].lon;
+            let keyHardcode = 'a4f3874fab5cf559b1f2dedd2dcb6703'
+            var weatherURL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${keyHardcode}`;
+            return fetch(weatherURL);
+        })
+        .then(response => {
+          if (!response.ok) {
+            console.log('Could not get weather data');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Got weather data:', data);
+        })
+        .catch(error => {
+          console.log('There was a problem fetching weather data: ', error.message);
+        });
+    }
 
   
 

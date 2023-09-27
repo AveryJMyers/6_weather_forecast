@@ -6,3 +6,7 @@
 .hidden{
     display: none;
 }
+
+body{
+    background-color: rgb(177, 226, 230);
+}

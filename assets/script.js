@@ -16,10 +16,6 @@ function submitButton() {
     getWeather(city)
     searchTxt.value=''
 }
-function cityClick(city) {
-    console.log('clicked on ' + city);
-    getWeather(city);
-}
 
 function createHistory(city) {
   var history = JSON.parse(localStorage.getItem('history')) || [];
@@ -31,26 +27,26 @@ function createHistory(city) {
     console.log('city already in history'); // this makes no sense, work on improving this
   }
 }
-
 function generateHistory() {
-    var history = JSON.parse(localStorage.getItem('history')) || [];
-    var historyList = document.getElementById('historyList');
-  
-    if (!history.length) {
+  var history = JSON.parse(localStorage.getItem('history')) || [];
+  var historyList = document.getElementById('historyList');
+
+  if (!history.length) {
       console.log('no history to display');
-    } else {
+  } else {
       for (var i = 0; i < history.length; i++) {
-        var recentSearch = history[i];
-        var listItem = document.createElement('li');
-        listItem.classList.add('list-group-item');
-        listItem.textContent = recentSearch;
-        listItem.addEventListener('click', function() {
-            cityClick(recentSearch);
-        });
-        historyList.appendChild(listItem);
+          var recentSearch = history[i];
+          var listItem = document.createElement('li');
+          listItem.classList.add('list-group-item');
+          listItem.textContent = recentSearch;
+          listItem.addEventListener('click', function() {
+              city = this.textContent;
+              getWeather(city);
+          });
+          historyList.appendChild(listItem);
       }
-    }
   }
+}
 
 function getWeather(city) {
     var weatherURL = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=30&appid=8aac2c1bb4f228ebf4a3ecf51e0e6e58`;

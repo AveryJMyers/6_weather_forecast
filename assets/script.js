@@ -53,7 +53,7 @@ function generateHistory() {
 function getWeather(city) {
     console.log('hit get weather');
     console.log(apiKey);
-    var weatherURL = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=30&appid=8aac2c1bb4f228ebf4a3ecf51e0e6e58`;
+    var weatherURL = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=30&appid=8aac2c1bb4f228ebf4a3ecf51e0e6e58`;
     fetch(weatherURL)
         .then(response => {
             if (!response.ok) {
@@ -77,7 +77,7 @@ function getWeather(city) {
 function cityConversion(lat,lon){
     console.log('hit city conversion');
     console.log(lat,lon)
-    var cityURL = `api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+    var cityURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
     fetch(cityURL)
         .then(response => {
             if (!response.ok) {
@@ -86,7 +86,14 @@ function cityConversion(lat,lon){
             return response.json();
         })
         .then(data => {
-            console.log(data)
+            console.log(data);
+            const cityWeather = data.list[0].main.temp;
+            const cityWindSpeed = data.list[0].wind.speed;
+            const cityHumidity = data.list[0].main.humidity;
+            const weatherIcon = data.list[0].weather[0].icon;
+            console.log(cityWeather, 'weather');
+            console.log(cityWindSpeed, 'wind speed');
+            console.log(cityHumidity, 'humidity');
         })
         .catch(err => {
             console.error(err);

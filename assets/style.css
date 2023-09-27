@@ -6,12 +6,3 @@
 .hidden{
     display: none;
 }
-
-
-.row {
-    display: flex;
-  }
-  
-  .card {
-    flex: 1;
-  }

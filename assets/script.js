@@ -4,6 +4,8 @@ var searchBtn = document.getElementById('searchButton')
 var searchTxt = document.getElementById('searchText')
 var clearHistoryBtn = document.getElementById('clearHistory')
 var forecastContainer = document.getElementById('forecastContainer')
+var liveForecast = document.getElementById('liveForecast')
+var fiveDayForecast = document.getElementById('fiveDayForecast')
 
 
 //functions
@@ -97,11 +99,14 @@ function cityConversion(lat,lon){
             const cityWindSpeed = data.list[0].wind.speed;
             const cityHumidity = data.list[0].main.humidity;
             const weatherIcon = data.list[0].weather[0].icon;
+            const cityDate = data.list[0].dt_txt;
+            const options = { weekday: 'long', month: 'numeric', day: 'numeric' };
+            const formattedDate = new Date(cityDate).toLocaleDateString(undefined, options);
             console.log(cityWeather, 'weather');
             console.log(cityWindSpeed, 'wind speed');
             console.log(cityHumidity, 'humidity');
             console.log(weatherIcon, 'icon');
-            generateCard(cityName, cityWeather, cityWindSpeed, cityHumidity, weatherIcon);
+            generateCard(cityName, cityWeather, cityWindSpeed, cityHumidity, weatherIcon, formattedDate);
             futureForcast(data);
         })
         .catch(err => {
@@ -109,9 +114,9 @@ function cityConversion(lat,lon){
         });
 }
 
-function generateCard(cityName, cityWeather, cityWindSpeed, cityHumidity, weatherIcon){
+function generateCard(cityName, cityWeather, cityWindSpeed, cityHumidity, weatherIcon, formattedDate){
   forecastContainer.innerHTML = `
-  <div class="card h-10 col-2">
+  <div class="card">
     <div class="card-header">
       ${cityName}
     </div>
@@ -122,25 +127,7 @@ function generateCard(cityName, cityWeather, cityWindSpeed, cityHumidity, weathe
       <p class="card-text">Wind Speed: ${cityWindSpeed}</p>
     </div>
     <div class="card-footer text-muted">
-      2 days ago
-    </div>
-  </div>`;
-}
-
-function generateForecast(cityName, cityWeather, cityWindSpeed, cityHumidity, weatherIcon){
-  forecastContainer.innerHTML = `
-  <div class="card h-10 col-2">
-    <div class="card-header">
-      ${cityName}
-    </div>
-    <div class="card-body">
-      <h5 class="card-title">${cityWeather}</h5>
-      <p class="card-text">Humidity: ${cityHumidity}</p>
-      <p class="card-text">Icon: ${weatherIcon}</p>
-      <p class="card-text">Wind Speed: ${cityWindSpeed}</p>
-    </div>
-    <div class="card-footer text-muted">
-      2 days ago
+      Today's Weather!
     </div>
   </div>`;
 }
@@ -152,13 +139,16 @@ function futureForcast(data){
   for (let i = 1; i < 40; i += 8) {
     const cityName = data.city.name;
     const cityTemp = data.list[i].main.temp;
-    const cityDate = data.list[i].dt_txt;
     const cityHumidity = data.list[i].main.humidity;
     const cityWindSpeed = data.list[i].wind.speed;
     const weatherIcon = data.list[i].weather[0].icon;
+    const cityDate = data.list[i].dt_txt;
+    const options = { weekday: 'long', month: 'numeric', day: 'numeric' };
+    const formattedDate = new Date(cityDate).toLocaleDateString(undefined, options);
+
     
-    // const card = document.createElement('div');
-    // card.classList.add('card', 'col-2');
+    const card = document.createElement('div');
+    card.classList.add('card',);
     card.innerHTML = `
       <div class="card-header">
         ${cityName}
@@ -170,13 +160,29 @@ function futureForcast(data){
         <p class="card-text">Wind Speed: ${cityWindSpeed}</p>
       </div>
       <div class="card-footer text-muted">
-        ${cityDate}
+        ${formattedDate}
       </div>`;
-    
     forecastContainer.appendChild(card);
   }
 }
 
+function generateForecast(cityName, cityWeather, cityWindSpeed, cityHumidity, weatherIcon, formattedDate){
+  forecastContainer.innerHTML = 
+  `<div class="card">
+    <div class="card-header">
+      ${cityName}
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">${cityWeather}</h5>
+      <p class="card-text">Humidity: ${cityHumidity}</p>
+      <p class="card-text">Icon: ${weatherIcon}</p>
+      <p class="card-text">Wind Speed: ${cityWindSpeed}</p>
+    </div>
+    <div class="card-footer text-muted">
+      ${formattedDate}
+    </div>
+  </div>`;
+}
 
 
   

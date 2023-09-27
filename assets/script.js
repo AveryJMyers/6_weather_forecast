@@ -3,12 +3,12 @@ var apiKey = '8aac2c1bb4f228ebf4a3ecf51e0e6e58';
 var searchBtn = document.getElementById('searchButton')
 var searchTxt = document.getElementById('searchText')
 var clearHistoryBtn = document.getElementById('clearHistory')
-
+var forecastContainer = document.getElementById('forecastContainer')
 
 
 //functions
 function submitButton() {
-    console.log('hit submit button')
+    // console.log('hit submit button')
     city = searchTxt.value
     createHistory(city)
     getWeather(city)
@@ -24,7 +24,7 @@ function cityClick(city) {
     if (!history.includes(city)) {
       history.push(city);
       localStorage.setItem('history', JSON.stringify(history));
-      console.log('added to history!');
+      // console.log('added to history!');
     } else {
       console.log('city already in history');
     }
@@ -52,7 +52,6 @@ function generateHistory() {
 
 function getWeather(city) {
     console.log('hit get weather');
-    console.log(apiKey);
     var weatherURL = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=30&appid=8aac2c1bb4f228ebf4a3ecf51e0e6e58`;
     fetch(weatherURL)
         .then(response => {
@@ -67,6 +66,10 @@ function getWeather(city) {
             }
             let lat = data[0].lat;
             let lon = data[0].lon;
+            console.log('-----------------------')
+            console.log(data);
+            console.log(lat,lon);
+            console.log('-----------------------')
             cityConversion(lat,lon);
         })
         .catch(err => {
@@ -86,7 +89,10 @@ function cityConversion(lat,lon){
             return response.json();
         })
         .then(data => {
+            console.log('-_-_-_-')
             console.log(data);
+            console.log('-_-_-_-')
+            const cityName = data.city.name;
             const cityWeather = data.list[0].main.temp;
             const cityWindSpeed = data.list[0].wind.speed;
             const cityHumidity = data.list[0].main.humidity;
@@ -94,11 +100,84 @@ function cityConversion(lat,lon){
             console.log(cityWeather, 'weather');
             console.log(cityWindSpeed, 'wind speed');
             console.log(cityHumidity, 'humidity');
+            console.log(weatherIcon, 'icon');
+            generateCard(cityName, cityWeather, cityWindSpeed, cityHumidity, weatherIcon);
+            futureForcast(data);
         })
         .catch(err => {
             console.error(err);
         });
 }
+
+function generateCard(cityName, cityWeather, cityWindSpeed, cityHumidity, weatherIcon){
+  forecastContainer.innerHTML = `
+  <div class="card h-10 col-2">
+    <div class="card-header">
+      ${cityName}
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">${cityWeather}</h5>
+      <p class="card-text">Humidity: ${cityHumidity}</p>
+      <p class="card-text">Icon: ${weatherIcon}</p>
+      <p class="card-text">Wind Speed: ${cityWindSpeed}</p>
+    </div>
+    <div class="card-footer text-muted">
+      2 days ago
+    </div>
+  </div>`;
+}
+
+function generateForecast(cityName, cityWeather, cityWindSpeed, cityHumidity, weatherIcon){
+  forecastContainer.innerHTML = `
+  <div class="card h-10 col-2">
+    <div class="card-header">
+      ${cityName}
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">${cityWeather}</h5>
+      <p class="card-text">Humidity: ${cityHumidity}</p>
+      <p class="card-text">Icon: ${weatherIcon}</p>
+      <p class="card-text">Wind Speed: ${cityWindSpeed}</p>
+    </div>
+    <div class="card-footer text-muted">
+      2 days ago
+    </div>
+  </div>`;
+}
+
+function futureForcast(data){
+  console.log('hit future forcast');
+  console.log(data);
+  
+  for (let i = 1; i < 40; i += 8) {
+    const cityName = data.city.name;
+    const cityTemp = data.list[i].main.temp;
+    const cityDate = data.list[i].dt_txt;
+    const cityHumidity = data.list[i].main.humidity;
+    const cityWindSpeed = data.list[i].wind.speed;
+    const weatherIcon = data.list[i].weather[0].icon;
+    
+    // const card = document.createElement('div');
+    // card.classList.add('card', 'col-2');
+    card.innerHTML = `
+      <div class="card-header">
+        ${cityName}
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">${cityTemp}</h5>
+        <p class="card-text">Humidity: ${cityHumidity}</p>
+        <p class="card-text">Icon: ${weatherIcon}</p>
+        <p class="card-text">Wind Speed: ${cityWindSpeed}</p>
+      </div>
+      <div class="card-footer text-muted">
+        ${cityDate}
+      </div>`;
+    
+    forecastContainer.appendChild(card);
+  }
+}
+
+
 
   
 

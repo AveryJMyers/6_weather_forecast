@@ -19,18 +19,18 @@ function submitButton() {
 function cityClick(city) {
     console.log('clicked on ' + city);
     getWeather(city);
-  }
+}
 
-  function createHistory(city) {
-    var history = JSON.parse(localStorage.getItem('history')) || [];
-    if (!history.includes(city)) {
-      history.push(city);
-      localStorage.setItem('history', JSON.stringify(history));
-      // console.log('added to history!');
-    } else {
-      console.log('city already in history');
-    }
+function createHistory(city) {
+  var history = JSON.parse(localStorage.getItem('history')) || [];
+  if (!history.includes(city)) {
+    history.push(city);
+    localStorage.setItem('history', JSON.stringify(history));
+    // console.log('added to history!');
+  } else {
+    console.log('city already in history'); // this makes no sense, work on improving this
   }
+}
 
 function generateHistory() {
     var history = JSON.parse(localStorage.getItem('history')) || [];
@@ -53,7 +53,6 @@ function generateHistory() {
   }
 
 function getWeather(city) {
-    console.log('hit get weather');
     var weatherURL = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=30&appid=8aac2c1bb4f228ebf4a3ecf51e0e6e58`;
     fetch(weatherURL)
         .then(response => {
@@ -68,10 +67,7 @@ function getWeather(city) {
             }
             let lat = data[0].lat;
             let lon = data[0].lon;
-            console.log('-----------------------')
-            console.log(data);
-            console.log(lat,lon);
-            console.log('-----------------------')
+   
             cityConversion(lat,lon);
         })
         .catch(err => {
@@ -80,9 +76,8 @@ function getWeather(city) {
 }
 
 function cityConversion(lat,lon){
-    console.log('hit city conversion');
-    console.log(lat,lon)
-    var cityURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+
+    var cityURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${apiKey}`;
     fetch(cityURL)
         .then(response => {
             if (!response.ok) {
@@ -91,9 +86,7 @@ function cityConversion(lat,lon){
             return response.json();
         })
         .then(data => {
-            console.log('-_-_-_-')
-            console.log(data);
-            console.log('-_-_-_-')
+       
             const cityName = data.city.name;
             const cityWeather = data.list[0].main.temp;
             const cityWindSpeed = data.list[0].wind.speed;
@@ -102,10 +95,6 @@ function cityConversion(lat,lon){
             const cityDate = data.list[0].dt_txt;
             const options = { weekday: 'long', month: 'numeric', day: 'numeric' };
             const formattedDate = new Date(cityDate).toLocaleDateString(undefined, options);
-            console.log(cityWeather, 'weather');
-            console.log(cityWindSpeed, 'wind speed');
-            console.log(cityHumidity, 'humidity');
-            console.log(weatherIcon, 'icon');
             generateCard(cityName, cityWeather, cityWindSpeed, cityHumidity, weatherIcon, formattedDate);
             futureForcast(data);
         })
@@ -121,10 +110,10 @@ function generateCard(cityName, cityWeather, cityWindSpeed, cityHumidity, weathe
       ${cityName}
     </div>
     <div class="card-body">
-      <h5 class="card-title">${cityWeather}</h5>
-      <p class="card-text">Humidity: ${cityHumidity}</p>
-      <p class="card-text">Icon: ${weatherIcon}</p>
-      <p class="card-text">Wind Speed: ${cityWindSpeed}</p>
+      <img class="weatherIcon" src="https://openweathermap.org/img/wn/${weatherIcon}.png" alt="icon">
+      <h5 class="card-title">${cityWeather}°F</h5>
+      <p class="card-text">${cityHumidity}% Humidity</p>
+      <p class="card-text">Wind Speed: ${cityWindSpeed}mph</p>
     </div>
     <div class="card-footer text-muted">
       Today's Weather!
@@ -133,12 +122,11 @@ function generateCard(cityName, cityWeather, cityWindSpeed, cityHumidity, weathe
 }
 
 function futureForcast(data){
-  console.log('hit future forcast');
-  console.log(data);
+
   
   for (let i = 1; i < 40; i += 8) {
     const cityName = data.city.name;
-    const cityTemp = data.list[i].main.temp;
+    const cityWeather = data.list[i].main.temp;
     const cityHumidity = data.list[i].main.humidity;
     const cityWindSpeed = data.list[i].wind.speed;
     const weatherIcon = data.list[i].weather[0].icon;
@@ -154,10 +142,10 @@ function futureForcast(data){
         ${cityName}
       </div>
       <div class="card-body">
-        <h5 class="card-title">${cityTemp}</h5>
-        <p class="card-text">Humidity: ${cityHumidity}</p>
-        <p class="card-text">Icon: ${weatherIcon}</p>
-        <p class="card-text">Wind Speed: ${cityWindSpeed}</p>
+        <img class="weatherIcon" src="https://openweathermap.org/img/wn/${weatherIcon}.png" alt="icon">
+        <h5 class="card-title">${cityWeather}°F</h5>
+        <p class="card-text">${cityHumidity}% Humidity</p>
+        <p class="card-text">Wind Speed: ${cityWindSpeed}mph</p>
       </div>
       <div class="card-footer text-muted">
         ${formattedDate}
@@ -175,7 +163,7 @@ function generateForecast(cityName, cityWeather, cityWindSpeed, cityHumidity, we
     <div class="card-body">
       <h5 class="card-title">${cityWeather}</h5>
       <p class="card-text">Humidity: ${cityHumidity}</p>
-      <p class="card-text">Icon: ${weatherIcon}</p>
+       <img class="weatherIcon" src="https://openweathermap.org/img/wn/${weatherIcon}.png" alt="icon">
       <p class="card-text">Wind Speed: ${cityWindSpeed}</p>
     </div>
     <div class="card-footer text-muted">
@@ -188,7 +176,6 @@ function generateForecast(cityName, cityWeather, cityWindSpeed, cityHumidity, we
   
 
 function clearHistory() {
-    console.log('hit clear history');
     var history = JSON.parse(localStorage.getItem('history'));
     if (!history) {
       console.log('no history to delete');

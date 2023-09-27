@@ -52,8 +52,8 @@ function generateHistory() {
 
 function getWeather(city) {
     console.log('hit get weather');
-    console.log(city);
-    var weatherURL = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=30&appid=${apiKey}`;
+    console.log(apiKey);
+    var weatherURL = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=30&appid=8aac2c1bb4f228ebf4a3ecf51e0e6e58`;
     fetch(weatherURL)
         .then(response => {
             if (!response.ok) {
@@ -67,23 +67,31 @@ function getWeather(city) {
             }
             let lat = data[0].lat;
             let lon = data[0].lon;
-            let keyHardcode = 'a4f3874fab5cf559b1f2dedd2dcb6703'
-            var weatherURL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${keyHardcode}`;
-            return fetch(weatherURL);
+            cityConversion(lat,lon);
         })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+function cityConversion(lat,lon){
+    console.log('hit city conversion');
+    console.log(lat,lon)
+    var cityURL = `api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+    fetch(cityURL)
         .then(response => {
-          if (!response.ok) {
-            console.log('Could not get weather data');
-          }
-          return response.json();
+            if (!response.ok) {
+            console.log('Could not get location data');
+            }
+            return response.json();
         })
         .then(data => {
-          console.log('Got weather data:', data);
+            console.log(data)
         })
-        .catch(error => {
-          console.log('There was a problem fetching weather data: ', error.message);
+        .catch(err => {
+            console.error(err);
         });
-    }
+}
 
   
 
